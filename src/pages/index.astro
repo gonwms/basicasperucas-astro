@@ -1,0 +1,24 @@
+---
+import Layout from "@/layouts/MainLayout.astro"
+import Card from "@/components/Card.astro"
+
+import Map from "@/components/map"
+---
+
+<Layout title="Welcome to Astro." description="description Welcome to Astro.">
+  <main>
+    <Map client:load />
+  </main>
+</Layout>
+<style>
+  main {
+  }
+
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+</style>

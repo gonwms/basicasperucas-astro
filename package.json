@@ -1,0 +1,28 @@
+{
+  "name": "n",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/react": "^3.6.2",
+    "@radix-ui/react-popover": "^1.1.2",
+    "@stadiamaps/api": "^5.0.0",
+    "astro": "^4.16.13",
+    "gsap": "^3.12.5",
+    "maplibre-gl": "^4.7.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/maplibre-gl": "^1.14.0",
+    "@types/react": "^18.3.12"
+  }
+}
