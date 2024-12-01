@@ -1,10 +1,10 @@
 {
   "files.exclude": {
-    ".vscode": false,
-    "node_modules": false,
-    ".astro": false,
-    "src\\env.d.ts": false,
-    "README.md": false,
-    "pnpm-lock.yaml": false
+    ".vscode": true,
+    "node_modules": true,
+    ".astro": true,
+    "src\\env.d.ts": true,
+    "README.md": true,
+    "pnpm-lock.yaml": true
   }
 }
