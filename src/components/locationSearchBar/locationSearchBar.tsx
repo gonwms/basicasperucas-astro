@@ -3,7 +3,7 @@ import { useState } from "react"
 import type { MapPoint } from "@/types"
 import maplibregl from "maplibre-gl"
 import { GeocodingApi } from "@stadiamaps/api"
-
+import styles from "./style.module.css"
 // https://docs.stadiamaps.com/sdks/javascript-typescript/
 
 interface IsProps {
@@ -32,10 +32,9 @@ export default function LocationSearchBar({
   // HANDLE AUTOCOMPLETE
   async function handleAutocomplete(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchQuery(e.currentTarget.value)
-    const numero = e.currentTarget.value.match(/\d+/)
+
     if (e.target.value.length > 5) {
       const api = new GeocodingApi()
-
       const res = await api.search({
         text: e.currentTarget.value,
         lang: "es-AR",
@@ -45,10 +44,17 @@ export default function LocationSearchBar({
         focusPointLat: center[1],
         boundaryCountry: ["AR"],
       })
+
+      const number = e.currentTarget?.value?.match(/\d+/)
+      console.log(number)
       const labels = res.features
         .map((item) => {
           const street = item?.properties?.street
-          const housenumber = item?.properties?.housenumber || ""
+
+          const housenumber =
+            e.currentTarget?.value?.match(/\d+/) !== undefined
+              ? e.target?.value?.match(/\d+/)
+              : ""
           const county = item?.properties?.county
             ? ", " + item?.properties?.county
             : ""
@@ -59,7 +65,7 @@ export default function LocationSearchBar({
           if (street === undefined) return
           if (region === undefined) return
 
-          return `${street} ${numero} ${county} ${region}`
+          return `${street} ${housenumber}${county} ${region}`
         })
         .filter((label) => label !== undefined)
 
@@ -98,23 +104,6 @@ export default function LocationSearchBar({
     }
   }
 
-  // EVENTS HANDLERS ---------------------------
-
-  // HANDLE SEARCH IN DATA
-
-  // const handleSearch = () => {
-  //   const point = mapPointsData.find((p) =>
-  //     p.title.toLowerCase().includes(searchQuery.toLowerCase())
-  //   )
-  //   if (point) {
-  //     setSelectedPoint(point)
-  //     map.current?.flyTo({
-  //       center: point.lngLat,
-  //       zoom: 12,
-  //     })
-  //   }
-  // }
-
   // HANDLE RESET
   const handleResetView = () => {
     console.log(map.current)
@@ -130,10 +119,9 @@ export default function LocationSearchBar({
   //  RENDER ------------------------------------------------------------------------
 
   return (
-    <nav>
+    <nav className={styles.nav}>
       <Popover.Root open={suggestions.length > 0}>
         <Popover.Trigger>
-          <div style={{ display: "none" }} />
           <input
             name="search"
             type="text"
@@ -142,27 +130,28 @@ export default function LocationSearchBar({
             onChange={(e) => handleAutocomplete(e)}
           />
         </Popover.Trigger>
-        <Popover.Content sideOffset={15} autoFocus={false}>
-          <ul>
-            {suggestions.map((label, index) => (
-              <li key={index}>
-                <button
-                  onClick={() => {
-                    setSearchQuery(label)
-                    setSuggestions([])
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      setSearchQuery(label)
-                      setSuggestions([])
-                    }
-                  }}
-                >
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
+        <Popover.Content
+          sideOffset={0}
+          autoFocus={false}
+          className={styles.popoverContent}
+        >
+          {suggestions.map((label, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setSearchQuery(label)
+                setSuggestions([])
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setSearchQuery(label)
+                  setSuggestions([])
+                }
+              }}
+            >
+              {label}
+            </button>
+          ))}
         </Popover.Content>
       </Popover.Root>
 

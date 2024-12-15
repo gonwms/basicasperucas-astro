@@ -1,0 +1,8 @@
+.card {
+  max-width: 100%;
+  background: white;
+  padding: 1rem;
+  border-radius: 0.6rem;
+  color: black;
+  overflow-wrap: break-word;
+}

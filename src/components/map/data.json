@@ -2,8 +2,8 @@
   {
     "id": 1,
     "lngLat": [-58.2189936, -34.7626968],
-    "title": "New York",
-    "description": "The Big Apple",
+    "title": "Bera",
+    "description": "Beraza",
     "address": "Moreno 1154, Caba",
     "contacto": {
       "whatsapp": "1167635792",
@@ -15,8 +15,8 @@
   {
     "id": 2,
     "lngLat": [-58.8189936, -36.7626968],
-    "title": "Los Angeles",
-    "description": "City of Angels",
+    "title": "Noware",
+    "description": "nothing here",
     "address": "Moreno 1154, Caba",
     "contacto": {
       "whatsapp": "1167635792",
@@ -28,8 +28,8 @@
   {
     "id": 3,
     "lngLat": [-58.57713524483238, -34.55612251528223],
-    "title": "Chicago",
-    "description": "The Windy City",
+    "title": "Caseros",
+    "description": "Red stratocaster",
     "address": "Moreno 1154, Caba",
     "contacto": {
       "whatsapp": "1167635792",

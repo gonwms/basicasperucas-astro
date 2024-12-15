@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import maplibregl from "maplibre-gl"
 import type { MapPoint } from "@/types"
-import LocationSearchBar from "@/components/map/locationSearchBar"
+import LocationSearchBar from "@/components/locationSearchBar/locationSearchBar"
 import "maplibre-gl/dist/maplibre-gl.css"
 
 import data from "./data.json"
@@ -10,7 +10,7 @@ import fronteras from "./fronteras.json"
 
 type Props = React.HTMLAttributes<HTMLDivElement>
 
-import Card from "@/components/card"
+import Card from "@/components/card/card"
 
 /* CONSTS */
 const mapPointsData = data as unknown as MapPoint[]
@@ -116,7 +116,7 @@ export default function Map(props: Props) {
   //  RENDER ----------------------------------------------
   return (
     <>
-      <div ref={mapContainer} style={{ width: "100%", height: "50vh" }}></div>
+      <div ref={mapContainer} style={{ width: "100%", height: "60vh" }}></div>
 
       <LocationSearchBar
         setSelectedPoint={setSelectedPoint}

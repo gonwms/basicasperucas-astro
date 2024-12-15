@@ -1,0 +1,26 @@
+.nav {
+  display: flex;
+  margin: 1rem 0;
+  gap: 1rem;
+  & button {
+    padding: 0.5rem 1rem;
+  }
+}
+.popoverContent {
+  padding: 10px;
+  background: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  max-height: 400px;
+  overflow-y: auto;
+  & button {
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    &:hover {
+      background: yellow;
+    }
+  }
+}

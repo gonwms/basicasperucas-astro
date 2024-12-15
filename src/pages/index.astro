@@ -1,7 +1,5 @@
 ---
 import Layout from "@/layouts/MainLayout.astro"
-import Card from "@/components/Card.astro"
-
 import Map from "@/components/map/map"
 const COLOR = "#ff00ff"
 ---
@@ -14,6 +12,7 @@ const COLOR = "#ff00ff"
 <style define:vars={{ color: COLOR }}>
   .map {
     border: 10px solid var(--COLOR);
+    position: relative;
   }
 
   h1 {
