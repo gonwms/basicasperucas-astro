@@ -2,16 +2,18 @@
 import Layout from "@/layouts/MainLayout.astro"
 import Card from "@/components/Card.astro"
 
-import Map from "@/components/map"
+import Map from "@/components/map/map"
+const COLOR = "#ff00ff"
 ---
 
-<Layout title="Welcome to Astro." description="description Welcome to Astro.">
-  <main>
+<Layout title="Basicas Astro" description="description Welcome to Astro.">
+  <main class="map">
     <Map client:load />
   </main>
 </Layout>
-<style>
-  main {
+<style define:vars={{ color: COLOR }}>
+  .map {
+    border: 10px solid var(--COLOR);
   }
 
   h1 {

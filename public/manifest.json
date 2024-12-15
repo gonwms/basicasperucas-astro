@@ -1,10 +1,12 @@
 {
+  "id": "/",
   "name": "Básicas Perucas",
+  "description": "A description of your PWA",
   "short_name": "Perucas",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#3E8BFF",
+  "theme_color": "#1F1F1F",
   "icons": [
     {
       "src": "icon-192x192.png",
@@ -15,6 +17,24 @@
       "src": "icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "mobile-screenshot.png",
+      "sizes": "720x1280",
+      "type": "image/png"
+    },
+    {
+      "src": "tablet-screenshot.png",
+      "sizes": "1280x800",
+      "type": "image/png"
+    },
+    {
+      "src": "desktop-screenshot.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
     }
   ]
 }

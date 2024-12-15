@@ -1,0 +1,15 @@
+---
+import fetchFakeData from "@/components/map/fakeAPI"
+
+export async function getStaticPaths() {
+  const res = await fetchFakeData()
+  return res.map((item: any) => ({
+    params: { slug: item.slug }, // Dynamic route parameter
+  }))
+}
+
+const { slug } = Astro.params
+console.log(slug)
+---
+
+<h1>{slug}</h1>

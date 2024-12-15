@@ -31,21 +31,43 @@ export default function LocationSearchBar({
 
   // HANDLE AUTOCOMPLETE
   async function handleAutocomplete(e: React.ChangeEvent<HTMLInputElement>) {
-    setSearchQuery(e.target.value)
-    const api = new GeocodingApi()
-    const res = await api.search({
-      text: e.currentTarget.value,
-      lang: "es",
-      layers: ["street", "locality", "neighbourhood", "country"],
-    })
-    const labels = res.features
+    setSearchQuery(e.currentTarget.value)
+    const numero = e.currentTarget.value.match(/\d+/)
+    if (e.target.value.length > 5) {
+      const api = new GeocodingApi()
 
-      .map((item) => item?.properties?.label)
-      .filter((label) => label !== undefined)
-    setSuggestions(labels)
-    console.log(res)
+      const res = await api.search({
+        text: e.currentTarget.value,
+        lang: "es-AR",
+        size: 10,
+        layers: ["street", "county", "region"],
+        focusPointLon: center[0],
+        focusPointLat: center[1],
+        boundaryCountry: ["AR"],
+      })
+      const labels = res.features
+        .map((item) => {
+          const street = item?.properties?.street
+          const housenumber = item?.properties?.housenumber || ""
+          const county = item?.properties?.county
+            ? ", " + item?.properties?.county
+            : ""
+          const region = item?.properties?.region
+            ? ", " + item?.properties?.region
+            : ""
+
+          if (street === undefined) return
+          if (region === undefined) return
+
+          return `${street} ${numero} ${county} ${region}`
+        })
+        .filter((label) => label !== undefined)
+
+      setSuggestions(labels)
+
+      console.log(JSON.stringify(res.features[0], null, 2))
+    }
   }
-
   // HANDLE SEARCH ANYWHERE
   const handleSearchAnywhere = async () => {
     try {
@@ -77,7 +99,9 @@ export default function LocationSearchBar({
   }
 
   // EVENTS HANDLERS ---------------------------
+
   // HANDLE SEARCH IN DATA
+
   // const handleSearch = () => {
   //   const point = mapPointsData.find((p) =>
   //     p.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -109,7 +133,7 @@ export default function LocationSearchBar({
     <nav>
       <Popover.Root open={suggestions.length > 0}>
         <Popover.Trigger>
-          {/* <div style={{ display: "none" }} /> */}
+          <div style={{ display: "none" }} />
           <input
             name="search"
             type="text"
@@ -142,8 +166,7 @@ export default function LocationSearchBar({
         </Popover.Content>
       </Popover.Root>
 
-      <button onClick={handleSearchAnywhere}>Buscar any</button>
-      {/* <button onClick={handleSearch}>Buscar</button> */}
+      <button onClick={handleSearchAnywhere}>Buscar</button>
       <button onClick={handleResetView}>Reset View</button>
     </nav>
   )

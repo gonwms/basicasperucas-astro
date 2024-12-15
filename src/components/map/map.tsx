@@ -1,45 +1,48 @@
-import data from "@/data.json"
-import mapStyle from "@/mapStyle.json"
-import fronteras from "@/fronteras.json"
-
 import React, { useEffect, useRef, useState } from "react"
 import maplibregl from "maplibre-gl"
-import Card from "../components/Card.astro"
 import type { MapPoint } from "@/types"
-import LocationSearchBar from "@/components/locationSearchBar"
+import LocationSearchBar from "@/components/map/locationSearchBar"
+import "maplibre-gl/dist/maplibre-gl.css"
 
-/*
- * -------------------------------------
- * CONSTS
- * -------------------------------------
- */
-const mapPointsData = data as MapPoint[]
+import data from "./data.json"
+import mapStyle from "./mapStyle.json"
+import fronteras from "./fronteras.json"
 
+type Props = React.HTMLAttributes<HTMLDivElement>
+
+import Card from "@/components/card"
+
+/* CONSTS */
+const mapPointsData = data as unknown as MapPoint[]
 const SPEED = 1.8
 const CURVE = 1
 const ZOOM_DEFAULT = 12
 const DEFAULT_LNG_LAT: [number, number] = [-58.2189936, -34.7626968]
 
-export default function Map() {
+export default function Map(props: Props) {
+  //
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<maplibregl.Map | null>(null)
-  const defaultCordinates = useRef(DEFAULT_LNG_LAT)
+  // const defaultCordinates = useRef(DEFAULT_LNG_LAT)
+  const center = useRef(DEFAULT_LNG_LAT)
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   // const [searchResults, setSearchResults] = useState<any[]>([])
 
+  // MAP SETUP
   useEffect(() => {
     if (!mapContainer.current) return
     map.current = new maplibregl.Map({
       container: mapContainer.current,
       // style: "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json",
       style: mapStyle as maplibregl.MapOptions["style"], // https://maplibre.org/maputnik
-      center: defaultCordinates.current,
+      center: center.current,
       zoom: ZOOM_DEFAULT,
       minZoom: 2,
       maxZoom: 16,
     })
 
+    if (!map.current) return
     // ADD CONTROLS -----------------------------------
     map.current.on("load", () => {
       map.current!.addControl(
@@ -99,39 +102,39 @@ export default function Map() {
         })
       })
     })
-    // HANDLE MOUSEMOVE
-    map.current.on("mousemove", (e: any) => {
-      // console.log(e.lngLat)
+    // HANDLE MOVE
+    map.current.on("moveend", (e: any) => {
+      const mapcenter = map.current!.getCenter()
+      center.current = [mapcenter.lng, mapcenter.lat]
+      console.log(mapcenter)
     })
-
     return () => {
       map.current?.remove()
     }
   }, [])
 
-  //  RETURN ----------------------------------------------
+  //  RENDER ----------------------------------------------
   return (
     <>
-      <div
-        ref={mapContainer}
-        style={{ height: "800px", width: "100%", position: "relative" }}
-      ></div>
+      <div ref={mapContainer} style={{ width: "100%", height: "50vh" }}></div>
 
       <LocationSearchBar
         setSelectedPoint={setSelectedPoint}
         setSearchQuery={setSearchQuery}
         map={map}
-        center={defaultCordinates.current}
-        zoom={ZOOM_DEFAULT}
+        center={center.current}
+        zoom={14}
         speed={SPEED}
         curve={CURVE}
         searchQuery={searchQuery}
       />
       {selectedPoint && (
-        <Card
-          selectedPoint={selectedPoint}
-          setSelectedPoint={setSelectedPoint}
-        />
+        <>
+          <Card
+            setSelectedPoint={setSelectedPoint}
+            selectedPoint={selectedPoint}
+          />
+        </>
       )}
     </>
   )
