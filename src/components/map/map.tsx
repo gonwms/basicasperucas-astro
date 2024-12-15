@@ -39,7 +39,8 @@ export default function Map(props: Props) {
       center: center.current,
       zoom: ZOOM_DEFAULT,
       minZoom: 2,
-      maxZoom: 16,
+      maxZoom: 18,
+      attributionControl: false,
     })
 
     if (!map.current) return
@@ -59,6 +60,12 @@ export default function Map(props: Props) {
           },
           trackUserLocation: true,
         })
+      )
+      map.current!.addControl(
+        new maplibregl.AttributionControl({
+          compact: true,
+        }),
+        "bottom-left"
       )
     })
     // ADD ARGENTINA OUTLINE -----------------------------------
@@ -106,7 +113,7 @@ export default function Map(props: Props) {
     map.current.on("moveend", (e: any) => {
       const mapcenter = map.current!.getCenter()
       center.current = [mapcenter.lng, mapcenter.lat]
-      console.log(mapcenter)
+      // console.log(mapcenter)
     })
     return () => {
       map.current?.remove()

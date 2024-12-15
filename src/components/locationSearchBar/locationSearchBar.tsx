@@ -1,10 +1,10 @@
 import * as Popover from "@radix-ui/react-popover"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import type { MapPoint } from "@/types"
 import maplibregl from "maplibre-gl"
 import { GeocodingApi } from "@stadiamaps/api"
 import styles from "./style.module.css"
-// https://docs.stadiamaps.com/sdks/javascript-typescript/
+import { useDebounce } from "@/utils/useDebounce"
 
 interface IsProps {
   map: React.MutableRefObject<maplibregl.Map | null>
@@ -28,54 +28,71 @@ export default function LocationSearchBar({
   searchQuery,
 }: IsProps) {
   const [suggestions, setSuggestions] = useState<string[]>([])
+  const [open, setOpen] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const debouncedSearchQuery = useDebounce(searchQuery, 300) // 300ms delay
+  const [serachState, setSearchState] = useState<
+    "idle" | "loading" | "success" | "empty"
+  >("success")
+
+  // FETCH SUGGESTIONS
+  useEffect(() => {
+    async function fetchSuggestions() {
+      const api = new GeocodingApi()
+      const res = await api.search({
+        text: debouncedSearchQuery,
+        lang: "es-AR",
+        size: 10,
+        layers: ["street", "county", "region", "country"],
+        focusPointLon: center[0],
+        focusPointLat: center[1],
+        // boundaryCountry: ["AR"],
+      })
+
+      // FORMAT SUGGESTIONS
+      const number = debouncedSearchQuery.match(/\d+/)
+      const labels = res.features
+        .map((item) => {
+          const addr = {
+            street: item?.properties?.street,
+            number: number ? ` ${number[0]}` : "",
+            county: item?.properties?.county
+              ? `, ${item.properties.county}`
+              : "",
+            region: item?.properties?.region
+              ? `, ${item.properties.region}`
+              : "",
+          }
+
+          if (addr.street === undefined || addr.region === undefined) return
+
+          return `${addr.street}${addr.number}${addr.county}${addr.region}`
+        })
+        .filter((label): label is string => label !== undefined)
+
+      setSuggestions(labels)
+    }
+    fetchSuggestions()
+  }, [debouncedSearchQuery, center])
+
+  // OPEN POPOVER
+  useEffect(() => {
+    if (suggestions.length > 0) {
+      setOpen(true)
+    } else {
+      setOpen(false)
+    }
+  }, [suggestions])
 
   // HANDLE AUTOCOMPLETE
   async function handleAutocomplete(e: React.ChangeEvent<HTMLInputElement>) {
-    setSearchQuery(e.currentTarget.value)
-
-    if (e.target.value.length > 5) {
-      const api = new GeocodingApi()
-      const res = await api.search({
-        text: e.currentTarget.value,
-        lang: "es-AR",
-        size: 10,
-        layers: ["street", "county", "region"],
-        focusPointLon: center[0],
-        focusPointLat: center[1],
-        boundaryCountry: ["AR"],
-      })
-
-      const number = e.currentTarget?.value?.match(/\d+/)
-      console.log(number)
-      const labels = res.features
-        .map((item) => {
-          const street = item?.properties?.street
-
-          const housenumber =
-            e.currentTarget?.value?.match(/\d+/) !== undefined
-              ? e.target?.value?.match(/\d+/)
-              : ""
-          const county = item?.properties?.county
-            ? ", " + item?.properties?.county
-            : ""
-          const region = item?.properties?.region
-            ? ", " + item?.properties?.region
-            : ""
-
-          if (street === undefined) return
-          if (region === undefined) return
-
-          return `${street} ${housenumber}${county} ${region}`
-        })
-        .filter((label) => label !== undefined)
-
-      setSuggestions(labels)
-
-      console.log(JSON.stringify(res.features[0], null, 2))
-    }
+    const value = e.currentTarget.value
+    setSearchQuery(value)
   }
+
   // HANDLE SEARCH ANYWHERE
-  const handleSearchAnywhere = async () => {
+  const handleSearch = async () => {
+    setSearchState("loading")
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -85,6 +102,7 @@ export default function LocationSearchBar({
       const data = await response.json()
 
       if (data && data.length > 0) {
+        setSearchState("success")
         const [lng, lat] = [parseFloat(data[0].lon), parseFloat(data[0].lat)]
         map.current?.flyTo({
           center: [lng, lat],
@@ -92,12 +110,14 @@ export default function LocationSearchBar({
           speed: speed,
           curve: curve,
         })
+        //
         new maplibregl.Marker({
           color: "#ffffff",
-          // draggable: true,
         })
           .setLngLat([lng, lat])
           .addTo(map.current!)
+      } else {
+        setSearchState("empty")
       }
     } catch (error) {
       console.error("Error searching for location:", error)
@@ -106,7 +126,6 @@ export default function LocationSearchBar({
 
   // HANDLE RESET
   const handleResetView = () => {
-    console.log(map.current)
     map.current?.flyTo({
       center: center,
       zoom: zoom,
@@ -116,47 +135,58 @@ export default function LocationSearchBar({
     setSelectedPoint(null)
   }
 
-  //  RENDER ------------------------------------------------------------------------
+  // HANDLE SUGGESTION SELECTION
+  const handleSuggestionClick = (suggestion: string) => {
+    setSearchQuery(suggestion)
+    setOpen(false)
+    if (inputRef.current) {
+      inputRef.current.focus()
+    }
+  }
 
   return (
-    <nav className={styles.nav}>
-      <Popover.Root open={suggestions.length > 0}>
-        <Popover.Trigger>
-          <input
-            name="search"
-            type="text"
-            placeholder="Buscar"
-            value={searchQuery}
-            onChange={(e) => handleAutocomplete(e)}
-          />
-        </Popover.Trigger>
-        <Popover.Content
-          sideOffset={0}
-          autoFocus={false}
-          className={styles.popoverContent}
-        >
-          {suggestions.map((label, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setSearchQuery(label)
-                setSuggestions([])
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setSearchQuery(label)
-                  setSuggestions([])
-                }
-              }}
-            >
-              {label}
+    <>
+      <nav className={styles.nav}>
+        <Popover.Root open={open} onOpenChange={setOpen}>
+          <Popover.Anchor className={styles.searchAnchor}>
+            <input
+              ref={inputRef}
+              name="search"
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={handleAutocomplete}
+              className={styles.searchInput}
+            />
+            <button onClick={handleSearch} className={styles.searchButton}>
+              {serachState === "loading" ? "Loading..." : "Search"}
             </button>
-          ))}
-        </Popover.Content>
-      </Popover.Root>
+          </Popover.Anchor>
+          <Popover.Portal>
+            <Popover.Content
+              className={styles.popoverContent}
+              align="start"
+              sideOffset={5}
+              onOpenAutoFocus={(e) => e.preventDefault()}
+            >
+              {suggestions.map((label, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleSuggestionClick(label)}
+                  className={styles.suggestionItem}
+                >
+                  {label}
+                </button>
+              ))}
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
 
-      <button onClick={handleSearchAnywhere}>Buscar</button>
-      <button onClick={handleResetView}>Reset View</button>
-    </nav>
+        <button onClick={handleResetView} className={styles.resetButton}>
+          Reset View
+        </button>
+      </nav>
+      {serachState === "empty" && <small>No found</small>}
+    </>
   )
 }
