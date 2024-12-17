@@ -4,7 +4,7 @@ import type { MapPoint } from "@/types"
 import LocationSearchBar from "@/components/locationSearchBar/locationSearchBar"
 import "maplibre-gl/dist/maplibre-gl.css"
 
-import data from "./data.json"
+import data from "@/data.json"
 import mapStyle from "./mapStyle.json"
 import fronteras from "./fronteras.json"
 
@@ -13,7 +13,8 @@ type Props = React.HTMLAttributes<HTMLDivElement>
 import Card from "@/components/card/card"
 
 /* CONSTS */
-const mapPointsData = data as unknown as MapPoint[]
+const mapPoints = data as unknown as MapPoint[]
+
 const SPEED = 1.8
 const CURVE = 1
 const ZOOM_DEFAULT = 12
@@ -88,7 +89,7 @@ export default function Map(props: Props) {
     })
     // ADD MARKERS ------------------------------------
     map.current.on("load", () => {
-      mapPointsData.forEach((point) => {
+      mapPoints.forEach((point) => {
         const marker = new maplibregl.Marker({
           // color: "#0000ff55",
           // draggable: true,

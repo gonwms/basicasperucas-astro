@@ -1,25 +1,25 @@
 ---
 import Layout from "@/layouts/MainLayout.astro"
 import Map from "@/components/map/map"
+import CardPile from "@/components/card/cardpile"
 const COLOR = "#ff00ff"
 ---
 
 <Layout title="Basicas Astro" description="description Welcome to Astro.">
   <main class="map">
     <Map client:load />
+    <CardPile client:load />
   </main>
 </Layout>
+
 <style define:vars={{ color: COLOR }}>
   .map {
     border: 10px solid var(--COLOR);
     position: relative;
   }
-
-  h1 {
-    font-size: 4rem;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    margin-bottom: 1em;
+  main {
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 </style>

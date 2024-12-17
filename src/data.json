@@ -10,7 +10,8 @@
       "telegram": "1167635792",
       "facebook": "https://www.facebook.com/lala",
       "instagram": "https://www.instagram.com/lala"
-    }
+    },
+    "color": "#fee480"
   },
   {
     "id": 2,
@@ -23,7 +24,8 @@
       "telegram": "1167635792",
       "facebook": "https://www.facebook.com/lala",
       "instagram": "https://www.instagram.com/lala"
-    }
+    },
+    "color": "#1da1f2"
   },
   {
     "id": 3,
@@ -36,6 +38,7 @@
       "telegram": "1167635792",
       "facebook": "https://www.facebook.com/lala",
       "instagram": "https://www.instagram.com/lala"
-    }
+    },
+    "color": "#fee480"
   }
 ]

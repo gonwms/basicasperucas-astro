@@ -8,4 +8,5 @@ export interface MapPoint {
   description: string
   address: string
   contacto: Contacto
+  color: string
 }

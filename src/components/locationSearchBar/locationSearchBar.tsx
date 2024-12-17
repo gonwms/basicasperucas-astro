@@ -48,27 +48,24 @@ export default function LocationSearchBar({
         focusPointLat: center[1],
         // boundaryCountry: ["AR"],
       })
-
+      console.log(res.features)
       // FORMAT SUGGESTIONS
       const number = debouncedSearchQuery.match(/\d+/)
-      const labels = res.features
-        .map((item) => {
-          const addr = {
-            street: item?.properties?.street,
-            number: number ? ` ${number[0]}` : "",
-            county: item?.properties?.county
-              ? `, ${item.properties.county}`
-              : "",
-            region: item?.properties?.region
-              ? `, ${item.properties.region}`
-              : "",
-          }
+      const labels = res.features.map((item) => {
+        const addr = {
+          street: item?.properties?.street ? item.properties.street : "",
+          number: number ? ` ${number[0]}` : "",
+          county: item?.properties?.county ? `, ${item.properties.county}` : "",
+          region: item?.properties?.region ? `, ${item.properties.region}` : "",
+          country: item?.properties?.country
+            ? `, ${item.properties.country}`
+            : "",
+        }
 
-          if (addr.street === undefined || addr.region === undefined) return
+        // if (addr.street === undefined || addr.region === undefined) return
 
-          return `${addr.street}${addr.number}${addr.county}${addr.region}`
-        })
-        .filter((label): label is string => label !== undefined)
+        return `${addr.street}${addr.number}${addr.county}${addr.region}${addr.country}`
+      })
 
       setSuggestions(labels)
     }
@@ -90,7 +87,7 @@ export default function LocationSearchBar({
     setSearchQuery(value)
   }
 
-  // HANDLE SEARCH ANYWHERE
+  // HANDLE SEARCH
   const handleSearch = async () => {
     setSearchState("loading")
     try {
@@ -166,6 +163,7 @@ export default function LocationSearchBar({
             <Popover.Content
               className={styles.popoverContent}
               align="start"
+              side="top"
               sideOffset={5}
               onOpenAutoFocus={(e) => e.preventDefault()}
             >
