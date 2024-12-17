@@ -15,10 +15,6 @@ export default function CardPile() {
   const [cards, setCards] = useState(MapPoints)
   const [activeCard, setActiveCard] = useState(0)
 
-  // useEffect(() => {
-  //   cardRefs.current = cardRefs.current.slice(0, cards.length)
-  // }, [cards])
-
   useEffect(() => {
     if (!containerRef.current) return
 
