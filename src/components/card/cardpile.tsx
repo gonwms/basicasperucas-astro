@@ -1,118 +1,146 @@
-import React, { useRef, useState, useEffect } from "react"
-import { gsap } from "gsap"
-import { Draggable } from "gsap/Draggable"
-import styles from "./style.module.css"
-import data from "@/data.json"
-import type { MapPoint } from "@/types"
-gsap.registerPlugin(Draggable)
+import React, { useRef, useState, useEffect } from 'react';
+import { gsap } from 'gsap';
+import { Flip } from 'gsap/Flip';
+import { Draggable } from 'gsap/Draggable';
+import styles from './style.module.css';
+import data from '@/content/data.json';
+import type { MapPoint } from '@/types';
+import { useGSAP } from '@gsap/react';
+import useUrlParameters from '@/utils/useUrlParameters';
+
+gsap.registerPlugin(Draggable, Flip);
 
 export default function CardPile() {
-  //
-  const MapPoints = data as unknown as MapPoint[]
+  const mapPoints = data as unknown as MapPoint[];
 
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [cards, setCards] = useState(MapPoints)
-  const [activeCard, setActiveCard] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardsRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [cards, setCards] = useState(mapPoints);
+  let FlipDragState: Flip.FlipState;
 
-  useEffect(() => {
-    if (!containerRef.current) return
+  const { pathname, search, searchParams } = useUrlParameters();
 
-    const container = containerRef.current
-    const topCard = cardRefs.current[0]
+  // ENTRANCE AND UPDATE ANIMATION
+  useGSAP(
+    () => {
+      if (cardsRefs.current === null) return;
+      cardsRefs.current.forEach((card, index) => {
+        gsap
+          .timeline()
+          .fromTo(
+            card,
+            { y: (index + 1) * 15, scale: 1 - (index + 1) * 0.05, x: 0 },
+            { y: index * 15, scale: 1 - index * 0.05, rotation: 0, x: 0, stagger: 0.1 }
+          );
+      });
+    },
+    { dependencies: [cards] }
+  );
 
-    if (!topCard) return
-
-    const [draggable] = Draggable.create(topCard, {
-      type: "x,y",
-      edgeResistance: 0.45,
-      bounds: container,
-      inertia: false,
-
-      onDrag: function () {
-        gsap.to(topCard, {
-          rotation: this.x / 10,
-          duration: 0.1,
-        })
-      },
-      onDragEnd: function () {
-        if (Math.abs(this.x) > 40) {
+  // DRAG ANIMATION
+  useGSAP(
+    () => {
+      if (!containerRef.current || !cardsRefs.current) return;
+      const topCard = cardsRefs.current[0];
+      //
+      // DRAG
+      Draggable.create(topCard, {
+        bounds: containerRef.current,
+        type: 'x,y',
+        edgeResistance: 0,
+        inertia: false,
+        // ON DRAG
+        onDrag: function () {
           gsap.to(topCard, {
-            x: this.x < 0 ? "-50vw" : "50vw",
-            // y: -100,
-            rotationZ: this.x < 0 ? -30 : 30,
-            scale: 0.8,
-            duration: 0.2,
+            rotation: this.x / 30,
+            duration: 0.1
+          });
+          FlipDragState = Flip.getState(topCard);
+        },
+        // ON DRAG END
+        onDragEnd: function () {
+          const x = FlipDragState.elementStates[0].x;
 
-            onComplete: () => {
-              //
-              const newCards = [...cards] // clone cards
-              const [removed] = newCards.splice(0, 1) // remove first
-              newCards.push(removed) // put it the end
-              setCards(newCards) // set cards
-
-              gsap.set(topCard, {
-                x: 0,
-                y: 0,
-                opacity: 1,
-                scale: 1,
-                rotation: 0,
-              })
-            },
-          })
-        } else {
-          gsap.to(topCard, {
-            delay: 0.2,
-            x: 0,
-            y: 0,
-            rotation: 0,
-            duration: 0.2,
-          })
+          if (Math.abs(x) > 150) {
+            gsap.set(topCard, { x: x < 0 ? -500 : 500, rotationZ: x < 0 ? -10 : 10 });
+            Flip.from(FlipDragState, {
+              targets: topCard,
+              absolute: true,
+              duration: 0.2,
+              onComplete: () => {
+                const newCards = [...cards];
+                newCards.push(newCards.shift()!); // el primero pasa el final.
+                setCards(newCards);
+                // setActiveCard(newCards[0].id);
+                const url = new URL(window.location.href);
+                url.searchParams.set('basica', newCards[0].id.toString()); // Add or update the search parameter
+                window.history.pushState({}, '', url); // Update the URL without reloading
+              }
+            });
+          } else {
+            gsap.set(topCard, { x: 0, rotationZ: 0, y: 0 });
+            Flip.from(FlipDragState, { targets: topCard, absolute: true, duration: 0.2 });
+          }
         }
-      },
-    })
-
-    return () => {
-      draggable.kill()
-    }
-  }, [cards])
-
+      });
+    },
+    { dependencies: [cards] }
+  );
+  // HANDLE CARD FIND BY ID
   useEffect(() => {
-    const newCards = [...cards] // clone cards
-    const index = newCards.findIndex((card) => card.id === activeCard)
-    if (index === -1) return
-    const [removed] = newCards.splice(index, 1) // remove first
-    newCards.unshift(removed) // put it the end
-    setCards(newCards) // set cards
-  }, [activeCard])
+    const newCards = [...cards];
+    // buscar el index de card.id en el array
+    const index = newCards.findIndex((card) => {
+      return card.id.toString() === searchParams?.get('basica');
+    });
+    if (index === -1) return;
+    //
+    const [selected] = newCards.splice(index, 1); // quitar el elegido del array
+    newCards.splice(0, 0, selected); // agregarlo al principio
+    //
+    setCards(newCards);
+  }, [search]);
 
+  // HANDLE CLICK
+  function handleClick(id: number) {
+    if (!searchParams) return;
+    // setActiveCard(id);
+    const url = new URL(window.location.href);
+    url.searchParams.set('basica', id.toString()); // Add or update the search parameter
+    window.history.pushState({}, '', url); // Update the URL without reloading
+  }
+
+  // RENDER
   return (
     <div className={styles.container}>
       <nav>
-        <button onClick={() => setActiveCard(1)}>Bera 1</button>
-        <button onClick={() => setActiveCard(2)}>Noware 2</button>
-        <button onClick={() => setActiveCard(3)}>Caseros 3</button>
+        <button onClick={() => handleClick(1)}>Bera 1</button>
+        <button onClick={() => handleClick(2)}>Noware 2</button>
+        <button onClick={() => handleClick(3)}>Caseros 3</button>
+        <button onClick={() => handleClick(4)}>44</button>
+        <button onClick={() => handleClick(5)}>55</button>
+        <button onClick={() => handleClick(6)}>66</button>
       </nav>
       <div className={styles.cardContainer} ref={containerRef}>
-        {cards.map((card, index) => (
-          <div
-            key={card.id}
-            ref={(el) => (cardRefs.current[index] = el)}
-            className={styles.card}
-            style={{
-              background: card.color,
-              zIndex: cards.length - index,
-              transform: `translateY(${index * 10}px) scale(${
-                1 - index * 0.05
-              })`,
-            }}
-          >
-            <h1>{card.id}</h1>
-            <p>{card.title}</p>
-            <small>{card.description}</small>
-          </div>
-        ))}
+        {cards.map(
+          (card, index) =>
+            index < 3 && (
+              <div
+                key={card.id}
+                ref={(el) => (cardsRefs.current[index] = el)}
+                className={styles.card + ' ' + card.title}
+                style={{
+                  background: card.color,
+                  zIndex: cards.length - index
+                }}
+              >
+                <h2>{card.id}</h2>
+                <p>{card.title}</p>
+                <small>{card.description}</small>
+              </div>
+            )
+        )}
       </div>
     </div>
-  )
+  );
 }

@@ -1,11 +1,11 @@
 ---
-import Layout from "@/layouts/MainLayout.astro"
-import Map from "@/components/map/map"
-import CardPile from "@/components/card/cardpile"
-const COLOR = "#ff00ff"
+import Layout from '@/layouts/MainLayout.astro'
+import Map from '@/components/map/map'
+import CardPile from '@/components/card/cardpile'
+const COLOR = '#ff00ff'
 ---
 
-<Layout title="Basicas Astro" description="description Welcome to Astro.">
+<Layout title="Básicas Perucas" description="description Welcome to Astro.">
   <main class="map">
     <Map client:load />
     <CardPile client:load />
@@ -23,3 +23,10 @@ const COLOR = "#ff00ff"
     overflow-y: auto;
   }
 </style>
+
+<script>
+  const search = window.location.search
+  const searchParams = `${new URLSearchParams(search).get('basica')} | Basicas Perucas` || 'Basicas Perucas'
+  console.log('------', searchParams)
+  document.title = searchParams
+</script>

@@ -1,125 +1,108 @@
-import * as Popover from "@radix-ui/react-popover"
-import { useState, useRef, useEffect } from "react"
-import type { MapPoint } from "@/types"
-import maplibregl from "maplibre-gl"
-import { GeocodingApi } from "@stadiamaps/api"
-import styles from "./style.module.css"
-import { useDebounce } from "@/utils/useDebounce"
+import * as Popover from '@radix-ui/react-popover';
+import { useState, useRef, useEffect } from 'react';
+import type { MapPoint } from '@/types';
+import maplibregl from 'maplibre-gl';
+import { GeocodingApi } from '@stadiamaps/api';
+import styles from './style.module.css';
+import { useDebounce } from '@/utils/useDebounce';
 
 interface IsProps {
-  map: React.MutableRefObject<maplibregl.Map | null>
-  center: [number, number]
-  zoom: number
-  speed: number
-  curve: number
-  setSelectedPoint: React.Dispatch<React.SetStateAction<MapPoint | null>>
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>
-  searchQuery: string
+  map: React.MutableRefObject<maplibregl.Map | null>;
+  center: [number, number];
+  zoom: number;
+  speed: number;
+  curve: number;
+  setSelectedPoint: React.Dispatch<React.SetStateAction<MapPoint | null>>;
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+  searchQuery: string;
 }
 
-export default function LocationSearchBar({
-  setSelectedPoint,
-  setSearchQuery,
-  map,
-  center,
-  zoom,
-  speed,
-  curve,
-  searchQuery,
-}: IsProps) {
-  const [suggestions, setSuggestions] = useState<string[]>([])
-  const [open, setOpen] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const debouncedSearchQuery = useDebounce(searchQuery, 300) // 300ms delay
-  const [serachState, setSearchState] = useState<
-    "idle" | "loading" | "success" | "empty"
-  >("success")
+export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, map, center, zoom, speed, curve, searchQuery }: IsProps) {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms delay
+  const [searchState, setSearchState] = useState<'idle' | 'loading' | 'success' | 'empty'>('success');
 
   // FETCH SUGGESTIONS
   useEffect(() => {
     async function fetchSuggestions() {
-      const api = new GeocodingApi()
+      const api = new GeocodingApi();
       const res = await api.search({
         text: debouncedSearchQuery,
-        lang: "es-AR",
+        lang: 'es-AR',
         size: 10,
-        layers: ["street", "county", "region", "country"],
+        layers: ['street', 'county', 'region', 'country'],
         focusPointLon: center[0],
-        focusPointLat: center[1],
+        focusPointLat: center[1]
         // boundaryCountry: ["AR"],
-      })
-      console.log(res.features)
+      });
+      console.log(res.features);
       // FORMAT SUGGESTIONS
-      const number = debouncedSearchQuery.match(/\d+/)
+      const number = debouncedSearchQuery.match(/\d+/);
       const labels = res.features.map((item) => {
         const addr = {
-          street: item?.properties?.street ? item.properties.street : "",
-          number: number ? ` ${number[0]}` : "",
-          county: item?.properties?.county ? `, ${item.properties.county}` : "",
-          region: item?.properties?.region ? `, ${item.properties.region}` : "",
-          country: item?.properties?.country
-            ? `, ${item.properties.country}`
-            : "",
-        }
+          street: item?.properties?.street ? item.properties.street : '',
+          number: number ? ` ${number[0]}` : '',
+          county: item?.properties?.county ? `, ${item.properties.county}` : '',
+          region: item?.properties?.region ? `, ${item.properties.region}` : '',
+          country: item?.properties?.country ? `, ${item.properties.country}` : ''
+        };
 
         // if (addr.street === undefined || addr.region === undefined) return
 
-        return `${addr.street}${addr.number}${addr.county}${addr.region}${addr.country}`
-      })
+        return `${addr.street}${addr.number}${addr.county}${addr.region}${addr.country}`;
+      });
 
-      setSuggestions(labels)
+      setSuggestions(labels);
     }
-    fetchSuggestions()
-  }, [debouncedSearchQuery, center])
+    fetchSuggestions();
+  }, [debouncedSearchQuery, center]);
 
   // OPEN POPOVER
   useEffect(() => {
     if (suggestions.length > 0) {
-      setOpen(true)
+      setOpen(true);
     } else {
-      setOpen(false)
+      setOpen(false);
     }
-  }, [suggestions])
+  }, [suggestions]);
 
   // HANDLE AUTOCOMPLETE
   async function handleAutocomplete(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.currentTarget.value
-    setSearchQuery(value)
+    const value = e.currentTarget.value;
+    setSearchQuery(value);
   }
 
   // HANDLE SEARCH
   const handleSearch = async () => {
-    setSearchState("loading")
+    setSearchState('loading');
     try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          searchQuery
-        )}`
-      )
-      const data = await response.json()
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`);
+      const data = await response.json();
 
       if (data && data.length > 0) {
-        setSearchState("success")
-        const [lng, lat] = [parseFloat(data[0].lon), parseFloat(data[0].lat)]
+        setSearchState('success');
+        const [lng, lat] = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
         map.current?.flyTo({
           center: [lng, lat],
           zoom: zoom,
           speed: speed,
-          curve: curve,
-        })
+          curve: curve
+        });
         //
         new maplibregl.Marker({
-          color: "#ffffff",
+          color: '#ffffff'
         })
           .setLngLat([lng, lat])
-          .addTo(map.current!)
+          .addTo(map.current!);
       } else {
-        setSearchState("empty")
+        setSearchState('empty');
       }
     } catch (error) {
-      console.error("Error searching for location:", error)
+      console.error('Error searching for location:', error);
     }
-  }
+  };
 
   // HANDLE RESET
   const handleResetView = () => {
@@ -127,19 +110,19 @@ export default function LocationSearchBar({
       center: center,
       zoom: zoom,
       speed: speed,
-      curve: curve,
-    })
-    setSelectedPoint(null)
-  }
+      curve: curve
+    });
+    setSelectedPoint(null);
+  };
 
   // HANDLE SUGGESTION SELECTION
   const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion)
-    setOpen(false)
+    setSearchQuery(suggestion);
+    setOpen(false);
     if (inputRef.current) {
-      inputRef.current.focus()
+      inputRef.current.focus();
     }
-  }
+  };
 
   return (
     <>
@@ -156,23 +139,13 @@ export default function LocationSearchBar({
               className={styles.searchInput}
             />
             <button onClick={handleSearch} className={styles.searchButton}>
-              {serachState === "loading" ? "Loading..." : "Search"}
+              {searchState === 'loading' ? 'Loading...' : 'Search'}
             </button>
           </Popover.Anchor>
           <Popover.Portal>
-            <Popover.Content
-              className={styles.popoverContent}
-              align="start"
-              side="top"
-              sideOffset={5}
-              onOpenAutoFocus={(e) => e.preventDefault()}
-            >
+            <Popover.Content className={styles.popoverContent} align="start" side="top" sideOffset={5} onOpenAutoFocus={(e) => e.preventDefault()}>
               {suggestions.map((label, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSuggestionClick(label)}
-                  className={styles.suggestionItem}
-                >
+                <button key={index} onClick={() => handleSuggestionClick(label)} className={styles.suggestionItem}>
                   {label}
                 </button>
               ))}
@@ -184,7 +157,7 @@ export default function LocationSearchBar({
           Reset View
         </button>
       </nav>
-      {serachState === "empty" && <small>No found</small>}
+      {searchState === 'empty' && <small>No found</small>}
     </>
-  )
+  );
 }

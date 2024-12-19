@@ -4,7 +4,7 @@ import type { MapPoint } from "@/types"
 import LocationSearchBar from "@/components/locationSearchBar/locationSearchBar"
 import "maplibre-gl/dist/maplibre-gl.css"
 
-import data from "@/data.json"
+import data from "@/content/data.json"
 import mapStyle from "./mapStyle.json"
 import fronteras from "./fronteras.json"
 
@@ -124,7 +124,7 @@ export default function Map(props: Props) {
   //  RENDER ----------------------------------------------
   return (
     <>
-      <div ref={mapContainer} style={{ width: "100%", height: "60vh" }}></div>
+      <div ref={mapContainer} style={{ width: "100%", height: "50vh" }}></div>
 
       <LocationSearchBar
         setSelectedPoint={setSelectedPoint}
