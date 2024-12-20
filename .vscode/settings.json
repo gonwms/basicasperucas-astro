@@ -6,5 +6,6 @@
     "src\\env.d.ts": false,
     "README.md": false,
     "pnpm-lock.yaml": false
-  }
+  },
+  "task.allowAutomaticTasks": "on"
 }

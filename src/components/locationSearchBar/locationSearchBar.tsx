@@ -12,7 +12,7 @@ interface IsProps {
   zoom: number;
   speed: number;
   curve: number;
-  setSelectedPoint: React.Dispatch<React.SetStateAction<MapPoint | null>>;
+  setSelectedPoint?: React.Dispatch<React.SetStateAction<MapPoint | null>>;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   searchQuery: string;
 }
@@ -112,7 +112,7 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
       speed: speed,
       curve: curve
     });
-    setSelectedPoint(null);
+    // setSelectedPoint(null);
   };
 
   // HANDLE SUGGESTION SELECTION
@@ -125,8 +125,8 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
   };
 
   return (
-    <>
-      <nav className={styles.nav}>
+    <div className={styles.serchContainer}>
+      <div className={styles.serchForm}>
         <Popover.Root open={open} onOpenChange={setOpen}>
           <Popover.Anchor className={styles.searchAnchor}>
             <input
@@ -156,8 +156,8 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
         <button onClick={handleResetView} className={styles.resetButton}>
           Reset View
         </button>
-      </nav>
+      </div>
       {searchState === 'empty' && <small>No found</small>}
-    </>
+    </div>
   );
 }

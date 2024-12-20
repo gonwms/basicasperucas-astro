@@ -1,10 +1,18 @@
-.nav {
-  margin: 1rem 0;
+.serchContainer {
   z-index: 1;
   display: flex;
+  flex-direction: column;
   gap: 10px;
+  position: absolute;
+  bottom: 40px;
+  width: 100%;
 }
-
+.serchForm {
+  margin: 0 auto;
+  display: flex;
+  gap: 10px;
+  bottom: 10px;
+}
 .searchAnchor {
   position: relative;
   flex-grow: 1;
@@ -16,8 +24,7 @@
 }
 
 .searchInput {
-  flex-grow: 1;
-  width: calc(100% - 20px);
+  /* flex-grow: 1; */
   border: none;
   padding: 0 10px;
   outline: none;

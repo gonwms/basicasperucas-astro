@@ -1,14 +1,14 @@
 ---
 import Layout from '@/layouts/MainLayout.astro'
 import Map from '@/components/map/map'
-import CardPile from '@/components/card/cardpile'
+import CardStack from '@/components/card/cardStack'
 const COLOR = '#ff00ff'
 ---
 
 <Layout title="Básicas Perucas" description="description Welcome to Astro.">
   <main class="map">
     <Map client:load />
-    <CardPile client:load />
+    <!-- <CardStack client:load /> -->
   </main>
 </Layout>
 
@@ -27,6 +27,5 @@ const COLOR = '#ff00ff'
 <script>
   const search = window.location.search
   const searchParams = `${new URLSearchParams(search).get('basica')} | Basicas Perucas` || 'Basicas Perucas'
-  console.log('------', searchParams)
   document.title = searchParams
 </script>

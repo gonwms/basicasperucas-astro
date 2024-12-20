@@ -10,15 +10,16 @@ import useUrlParameters from '@/utils/useUrlParameters';
 
 gsap.registerPlugin(Draggable, Flip);
 
-export default function CardPile() {
+export default function CardStack() {
   const mapPoints = data as unknown as MapPoint[];
 
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [cards, setCards] = useState(mapPoints);
+  const [visible, setVisible] = useState(false);
   let FlipDragState: Flip.FlipState;
 
-  const { pathname, search, searchParams } = useUrlParameters();
+  const { search, searchParams } = useUrlParameters();
 
   // ENTRANCE AND UPDATE ANIMATION
   useGSAP(
@@ -86,6 +87,7 @@ export default function CardPile() {
     },
     { dependencies: [cards] }
   );
+
   // HANDLE CARD FIND BY ID
   useEffect(() => {
     const newCards = [...cards];
@@ -101,7 +103,13 @@ export default function CardPile() {
     setCards(newCards);
   }, [search]);
 
-  // HANDLE CLICK
+  useEffect(() => {
+    console.log('change');
+    console.log(searchParams?.get('basica'));
+    searchParams?.get('basica') ? setVisible(true) : setVisible(false);
+  }, [search]);
+
+  // HANDLE EVENTS
   function handleClick(id: number) {
     if (!searchParams) return;
     // setActiveCard(id);
@@ -110,9 +118,15 @@ export default function CardPile() {
     window.history.pushState({}, '', url); // Update the URL without reloading
   }
 
+  function handleClose() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('basica'); // Remove the search parameter
+    window.history.pushState({}, '', url); // Update the URL without reloading
+  }
+
   // RENDER
   return (
-    <div className={styles.container}>
+    <>
       <nav>
         <button onClick={() => handleClick(1)}>Bera 1</button>
         <button onClick={() => handleClick(2)}>Noware 2</button>
@@ -121,26 +135,31 @@ export default function CardPile() {
         <button onClick={() => handleClick(5)}>55</button>
         <button onClick={() => handleClick(6)}>66</button>
       </nav>
-      <div className={styles.cardContainer} ref={containerRef}>
-        {cards.map(
-          (card, index) =>
-            index < 3 && (
-              <div
-                key={card.id}
-                ref={(el) => (cardsRefs.current[index] = el)}
-                className={styles.card + ' ' + card.title}
-                style={{
-                  background: card.color,
-                  zIndex: cards.length - index
-                }}
-              >
-                <h2>{card.id}</h2>
-                <p>{card.title}</p>
-                <small>{card.description}</small>
-              </div>
-            )
-        )}
-      </div>
-    </div>
+      {visible && (
+        <div className={styles.container}>
+          <div className={styles.cardContainer} ref={containerRef}>
+            {cards.map(
+              (card, index) =>
+                index < 3 && (
+                  <div
+                    key={card.id}
+                    ref={(el) => (cardsRefs.current[index] = el)}
+                    className={styles.card + ' ' + card.title}
+                    style={{
+                      background: card.color,
+                      zIndex: cards.length - index
+                    }}
+                  >
+                    <h2>{card.id}</h2>
+                    <button onClick={handleClose}>X</button>
+                    <p>{card.title}</p>
+                    <small>{card.description}</small>
+                  </div>
+                )
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
