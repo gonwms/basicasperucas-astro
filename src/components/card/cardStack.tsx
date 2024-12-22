@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/Flip';
-import { Draggable } from 'gsap/Draggable';
+import Draggable from 'gsap/Draggable';
 import styles from './style.module.css';
 import data from '@/content/data.json';
 import type { MapPoint } from '@/types';
