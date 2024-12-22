@@ -15,9 +15,9 @@
   },
   {
     "id": 2,
-    "lngLat": [-58.8189936, -36.7626968],
-    "title": "Noware",
-    "description": "nothing here",
+    "lngLat": [-64.1905436, -31.3978626],
+    "title": "CBA",
+    "description": "urquiza",
     "address": "Moreno 1154, Caba",
     "contacto": {
       "whatsapp": "1167635792",
@@ -29,7 +29,7 @@
   },
   {
     "id": 3,
-    "lngLat": [-58.57713524483238, -34.55612251528223],
+    "lngLat": [-58.57713, -34.5561225],
     "title": "Caseros",
     "description": "Red stratocaster",
     "address": "Moreno 1154, Caba",

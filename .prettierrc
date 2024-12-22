@@ -6,9 +6,9 @@
   "printWidth": 150,
   "overrides": [
     {
-      "files": "cardpile.tsx",
+      "files": "cardStack.tsx",
       "options": {
-        "printWidth": 150
+        "printWidth": 100
       }
     }
   ]

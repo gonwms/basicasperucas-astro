@@ -9,6 +9,7 @@ import { useGSAP } from '@gsap/react';
 import useUrlParameters from '@/utils/useUrlParameters';
 
 gsap.registerPlugin(Draggable, Flip);
+const MAX_CARDS_TO_SHOW = 3;
 
 export default function CardStack() {
   const mapPoints = data as unknown as MapPoint[];
@@ -17,6 +18,7 @@ export default function CardStack() {
   const cardsRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [cards, setCards] = useState(mapPoints);
   const [visible, setVisible] = useState(false);
+  const firstOpen = useRef(true);
   let FlipDragState: Flip.FlipState;
 
   const { search, searchParams } = useUrlParameters();
@@ -25,15 +27,44 @@ export default function CardStack() {
   useGSAP(
     () => {
       if (cardsRefs.current === null) return;
-      cardsRefs.current.forEach((card, index) => {
+      // FIRST OPENED ANIMATION
+      if (firstOpen.current && visible) {
         gsap
-          .timeline()
+          .timeline({
+            defaults: { duration: 0.5 }
+          })
           .fromTo(
-            card,
-            { y: (index + 1) * 15, scale: 1 - (index + 1) * 0.05, x: 0 },
-            { y: index * 15, scale: 1 - index * 0.05, rotation: 0, x: 0, stagger: 0.1 }
+            cardsRefs.current,
+            { y: 400, scale: 0.5, rotation: (index) => index + 1 * 30, visibility: 'hidden' },
+            {
+              y: (index) => index * 15,
+              scale: (index) => 1 - index * 0.05,
+              rotation: 0,
+              visibility: 'visible',
+              stagger: {
+                each: 0.1,
+                from: 'end'
+              }
+            }
           );
-      });
+
+        firstOpen.current = false;
+        // NO FIRST OPENED ANIMATION
+      } else {
+        // cardsRefs.current.forEach((card, index) => {
+        gsap.timeline().fromTo(
+          cardsRefs.current,
+          { y: (index) => (index + 1) * 15, scale: (index) => 1 - (index + 1) * 0.05, x: 0 },
+          {
+            y: (index) => index * 15,
+            scale: (index) => 1 - index * 0.05,
+            rotation: 0,
+            x: 0,
+            stagger: 0.1
+          }
+        );
+        // });
+      }
     },
     { dependencies: [cards] }
   );
@@ -62,7 +93,7 @@ export default function CardStack() {
         onDragEnd: function () {
           const x = FlipDragState.elementStates[0].x;
 
-          if (Math.abs(x) > 150) {
+          if (Math.abs(x) > 50) {
             gsap.set(topCard, { x: x < 0 ? -500 : 500, rotationZ: x < 0 ? -10 : 10 });
             Flip.from(FlipDragState, {
               targets: topCard,
@@ -72,7 +103,7 @@ export default function CardStack() {
                 const newCards = [...cards];
                 newCards.push(newCards.shift()!); // el primero pasa el final.
                 setCards(newCards);
-                // setActiveCard(newCards[0].id);
+                //
                 const url = new URL(window.location.href);
                 url.searchParams.set('basica', newCards[0].id.toString()); // Add or update the search parameter
                 window.history.pushState({}, '', url); // Update the URL without reloading
@@ -88,8 +119,17 @@ export default function CardStack() {
     { dependencies: [cards] }
   );
 
-  // HANDLE CARD FIND BY ID
+  // LISTEN SEARCHPARAMS CHANGES
   useEffect(() => {
+    // UPDATE VISIBILITY
+    searchParams?.get('basica') ? setVisible(true) : setVisible(false);
+    // UPDATE TITLE
+    const title = searchParams?.get('basica')
+      ? `${searchParams?.get('basica')} | Basicas Perucas`
+      : 'Basicas Perucas';
+    document.title = title;
+
+    // UPDATE CARDS ORDER
     const newCards = [...cards];
     // buscar el index de card.id en el array
     const index = newCards.findIndex((card) => {
@@ -103,44 +143,49 @@ export default function CardStack() {
     setCards(newCards);
   }, [search]);
 
-  useEffect(() => {
-    console.log('change');
-    console.log(searchParams?.get('basica'));
-    searchParams?.get('basica') ? setVisible(true) : setVisible(false);
-  }, [search]);
-
   // HANDLE EVENTS
   function handleClick(id: number) {
     if (!searchParams) return;
-    // setActiveCard(id);
     const url = new URL(window.location.href);
     url.searchParams.set('basica', id.toString()); // Add or update the search parameter
     window.history.pushState({}, '', url); // Update the URL without reloading
   }
 
-  function handleClose() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('basica'); // Remove the search parameter
-    window.history.pushState({}, '', url); // Update the URL without reloading
+  function handleClose(event: React.MouseEvent | React.TouchEvent) {
+    event.stopPropagation(); // Stop event propagation
+    firstOpen.current = true;
+
+    // close animation
+    gsap.to(cardsRefs.current, {
+      y: 500,
+      rotation: 20,
+      stagger: 0.1,
+      ease: 'power3.in',
+      onComplete: () => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('basica'); // Remove the search parameter
+        window.history.pushState({}, '', url); // Update the URL without reloading
+      }
+    });
   }
 
   // RENDER
   return (
     <>
-      <nav>
+      {/* <nav>
         <button onClick={() => handleClick(1)}>Bera 1</button>
         <button onClick={() => handleClick(2)}>Noware 2</button>
         <button onClick={() => handleClick(3)}>Caseros 3</button>
         <button onClick={() => handleClick(4)}>44</button>
         <button onClick={() => handleClick(5)}>55</button>
         <button onClick={() => handleClick(6)}>66</button>
-      </nav>
+      </nav> */}
       {visible && (
         <div className={styles.container}>
           <div className={styles.cardContainer} ref={containerRef}>
             {cards.map(
               (card, index) =>
-                index < 3 && (
+                index < MAX_CARDS_TO_SHOW && (
                   <div
                     key={card.id}
                     ref={(el) => (cardsRefs.current[index] = el)}
@@ -150,8 +195,10 @@ export default function CardStack() {
                       zIndex: cards.length - index
                     }}
                   >
+                    <button onClick={handleClose} onTouchEnd={handleClose}>
+                      CERRAR
+                    </button>
                     <h2>{card.id}</h2>
-                    <button onClick={handleClose}>X</button>
                     <p>{card.title}</p>
                     <small>{card.description}</small>
                   </div>
