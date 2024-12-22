@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { Flip } from 'gsap/Flip';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+import Flip from 'gsap/Flip';
 import Draggable from 'gsap/Draggable';
 import styles from './style.module.css';
 import data from '@/data/data.json';
 import type { MapPoint } from '@/types';
-import { useGSAP } from '@gsap/react';
 import useUrlParameters from '@/utils/useUrlParameters';
 
 gsap.registerPlugin(Draggable, Flip);
