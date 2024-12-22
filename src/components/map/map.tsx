@@ -3,7 +3,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { MapPoint } from '@/types';
 
-import data from '@/content/data.json';
+import data from '@/data/data.json';
 import mapStyle from './mapStyle.json';
 import fronteras from './fronteras.json';
 import LocationSearchBar from '@/components/locationSearchBar/locationSearchBar';
