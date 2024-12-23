@@ -2,7 +2,7 @@ import * as Popover from '@radix-ui/react-popover';
 import { useState, useRef, useEffect } from 'react';
 import type { MapPoint } from '@/types';
 import maplibregl from 'maplibre-gl';
-import { GeocodingApi } from '@stadiamaps/api';
+import stadiaMapsApi, { GeocodingApi } from '@stadiamaps/api';
 import styles from './style.module.css';
 import { useDebounce } from '@/utils/useDebounce';
 
@@ -27,7 +27,8 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
   // FETCH SUGGESTIONS
   useEffect(() => {
     async function fetchSuggestions() {
-      const api = new GeocodingApi();
+      const config = new stadiaMapsApi.Configuration({ apiKey: '02a8b5af-47cd-43d3-8f83-869801b880cd' });
+      const api = new GeocodingApi(config);
       const res = await api.search({
         text: debouncedSearchQuery,
         lang: 'es-AR',
