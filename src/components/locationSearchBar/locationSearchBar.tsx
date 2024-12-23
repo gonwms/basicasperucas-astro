@@ -27,7 +27,9 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
   // FETCH SUGGESTIONS
   useEffect(() => {
     async function fetchSuggestions() {
-      const config = new Configuration({ apiKey: '02a8b5af-47cd-43d3-8f83-869801b880cd' });
+      const config = new Configuration({
+        apiKey: 'Stadia-Auth 02a8b5af-47cd-43d3-8f83-869801b880cd'
+      });
       const api = new GeocodingApi(config);
       const res = await api.search({
         text: debouncedSearchQuery,
@@ -38,7 +40,7 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
         focusPointLat: center[1]
         // boundaryCountry: ["AR"],
       });
-      console.log(res.features);
+      // console.log(res.features);
       // FORMAT SUGGESTIONS
       const number = debouncedSearchQuery.match(/\d+/);
       const labels = res.features.map((item) => {
