@@ -14,7 +14,7 @@
     "openmaptiles": {
       "type": "vector",
       "scheme": "xyz",
-      "url": "https://tiles.stadiamaps.com/data/openmaptiles.json"
+      "url": "https://tiles.stadiamaps.com/data/openmaptiles.json&api_key=02a8b5af-47cd-43d3-8f83-869801b880cd"
     }
   },
   "sprite": "https://tiles.stadiamaps.com/styles/alidade-smooth-dark/sprite",
@@ -40,11 +40,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "maxzoom": 8,
-      "filter": [
-        "all",
-        ["==", "$type", "Polygon"],
-        ["==", "subclass", "ice_shelf"]
-      ],
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "subclass", "ice_shelf"]],
       "layout": { "visibility": "visible" },
       "paint": { "fill-color": "hsla(0, 0%, 75%, 60%)", "fill-opacity": 0.7 }
     },
@@ -54,11 +50,7 @@
       "source": "openmaptiles",
       "source-layer": "landcover",
       "maxzoom": 8,
-      "filter": [
-        "all",
-        ["==", "$type", "Polygon"],
-        ["==", "subclass", "glacier"]
-      ],
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "subclass", "glacier"]],
       "layout": { "visibility": "visible" },
       "paint": {
         "fill-color": "hsla(0, 0%, 75%, 50%)",
@@ -77,11 +69,7 @@
       "source": "openmaptiles",
       "source-layer": "landuse",
       "maxzoom": 16,
-      "filter": [
-        "all",
-        ["==", "$type", "Polygon"],
-        ["==", "class", "residential"]
-      ],
+      "filter": ["all", ["==", "$type", "Polygon"], ["==", "class", "residential"]],
       "layout": { "visibility": "visible" },
       "paint": {
         "fill-color": "hsla(60, 8%, 22%, 20%)",
@@ -220,11 +208,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 6,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["all", ["==", "brunnel", "tunnel"], ["==", "class", "motorway"]]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["==", "brunnel", "tunnel"], ["==", "class", "motorway"]]],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter",
@@ -249,11 +233,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 6,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["all", ["==", "brunnel", "tunnel"], ["==", "class", "motorway"]]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["==", "brunnel", "tunnel"], ["==", "class", "motorway"]]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -276,11 +256,7 @@
       "type": "line",
       "source": "openmaptiles",
       "source-layer": "transportation",
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["in", "class", "path", "footway", "construction"]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "path", "footway", "construction"]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -304,11 +280,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 8,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["in", "class", "minor", "service", "track"]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "minor", "service", "track"]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -338,11 +310,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 12,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["in", "class", "primary", "secondary", "tertiary", "trunk"]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "primary", "secondary", "tertiary", "trunk"]],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter",
@@ -366,11 +334,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 12,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["in", "class", "primary", "secondary", "tertiary", "trunk"]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "primary", "secondary", "tertiary", "trunk"]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -393,11 +357,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "maxzoom": 12,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["in", "class", "primary", "secondary", "tertiary", "trunk"]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["in", "class", "primary", "secondary", "tertiary", "trunk"]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -411,15 +371,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 6,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        [
-          "all",
-          ["!in", "brunnel", "bridge", "tunnel"],
-          ["==", "class", "motorway"]
-        ]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "motorway"]]],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter",
@@ -445,15 +397,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 6,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        [
-          "all",
-          ["!in", "brunnel", "bridge", "tunnel"],
-          ["==", "class", "motorway"]
-        ]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["!in", "brunnel", "bridge", "tunnel"], ["==", "class", "motorway"]]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -477,11 +421,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "maxzoom": 6,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["==", "class", "motorway"]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["==", "class", "motorway"]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -504,11 +444,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 16,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["all", ["==", "class", "rail"], ["has", "service"]]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["==", "class", "rail"], ["has", "service"]]],
       "layout": { "visibility": "visible", "line-join": "round" },
       "paint": { "line-color": "#545353", "line-width": 3 }
     },
@@ -518,12 +454,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 16,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["==", "class", "rail"],
-        ["has", "service"]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["==", "class", "rail"], ["has", "service"]],
       "layout": { "visibility": "visible", "line-join": "round" },
       "paint": {
         "line-color": "#7f7d7e",
@@ -537,11 +468,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 13,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["all", ["!has", "service"], ["==", "class", "rail"]]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["!has", "service"], ["==", "class", "rail"]]],
       "layout": { "visibility": "visible", "line-join": "round" },
       "paint": {
         "line-color": "#545353",
@@ -560,11 +487,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 13,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["all", ["!has", "service"], ["==", "class", "rail"]]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["!has", "service"], ["==", "class", "rail"]]],
       "layout": { "visibility": "visible", "line-join": "round" },
       "paint": {
         "line-color": "#7f7d7e",
@@ -593,11 +516,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 6,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"]]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"]]],
       "layout": {
         "line-cap": "butt",
         "line-join": "miter",
@@ -623,11 +542,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation",
       "minzoom": 6,
-      "filter": [
-        "all",
-        ["==", "$type", "LineString"],
-        ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"]]
-      ],
+      "filter": ["all", ["==", "$type", "LineString"], ["all", ["==", "brunnel", "bridge"], ["==", "class", "motorway"]]],
       "layout": {
         "line-cap": "round",
         "line-join": "round",
@@ -650,19 +565,7 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "transportation_name",
-      "filter": [
-        "all",
-        [
-          "!in",
-          "class",
-          "motorway",
-          "trunk",
-          "primary",
-          "secondary",
-          "tertiary"
-        ],
-        ["==", "$type", "LineString"]
-      ],
+      "filter": ["all", ["!in", "class", "motorway", "trunk", "primary", "secondary", "tertiary"], ["==", "$type", "LineString"]],
       "layout": {
         "symbol-avoid-edges": true,
         "text-size": 12,
@@ -680,11 +583,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", " ", ["get", "name:nonlatin"]],
             ""
           ]
@@ -711,11 +610,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -750,11 +645,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -791,11 +682,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -820,12 +707,7 @@
       "source": "openmaptiles",
       "source-layer": "poi",
       "minzoom": 15,
-      "filter": [
-        "all",
-        ["in", "class", "park"],
-        ["<=", "rank", 3],
-        ["==", "$type", "Point"]
-      ],
+      "filter": ["all", ["in", "class", "park"], ["<=", "rank", 3], ["==", "$type", "Point"]],
       "layout": {
         "text-size": 14,
         "symbol-avoid-edges": true,
@@ -839,11 +721,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -863,12 +741,7 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
-      "filter": [
-        "all",
-        ["==", "subclass", "park"],
-        ["==", "rank", 1],
-        ["==", "$type", "Point"]
-      ],
+      "filter": ["all", ["==", "subclass", "park"], ["==", "rank", 1], ["==", "$type", "Point"]],
       "layout": {
         "text-size": 14,
         "symbol-avoid-edges": true,
@@ -882,11 +755,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -906,12 +775,7 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
-      "filter": [
-        "all",
-        ["in", "subclass", "university", "hospital"],
-        ["<=", "rank", 3],
-        ["==", "$type", "Point"]
-      ],
+      "filter": ["all", ["in", "subclass", "university", "hospital"], ["<=", "rank", 3], ["==", "$type", "Point"]],
       "layout": {
         "text-size": 14,
         "symbol-avoid-edges": true,
@@ -925,11 +789,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -951,11 +811,7 @@
       "source-layer": "place",
       "minzoom": 11,
       "maxzoom": 14,
-      "filter": [
-        "all",
-        ["!in", "class", "city", "suburb", "town", "village"],
-        ["==", "$type", "Point"]
-      ],
+      "filter": ["all", ["!in", "class", "city", "suburb", "town", "village"], ["==", "$type", "Point"]],
       "layout": {
         "symbol-avoid-edges": true,
         "text-padding": {
@@ -980,11 +836,7 @@
         "text-anchor": "center",
         "text-field": [
           "case",
-          [
-            "==",
-            ["coalesce", ["get", "name:es"], ["get", "name:latin"]],
-            "Falkland Islands"
-          ],
+          ["==", ["coalesce", ["get", "name:es"], ["get", "name:latin"]], "Falkland Islands"],
           "Islas Malvinas",
           [
             "concat",
@@ -992,11 +844,7 @@
 
             [
               "case",
-              [
-                "all",
-                ["has", "name:nonlatin"],
-                ["is-supported-script", ["get", "name:nonlatin"]]
-              ],
+              ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
               ["concat", "\n", ["get", "name:nonlatin"]],
               ""
             ]
@@ -1016,11 +864,7 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "transportation_name",
-      "filter": [
-        "all",
-        ["in", "class", "trunk", "primary", "secondary", "tertiary"],
-        ["==", "$type", "LineString"]
-      ],
+      "filter": ["all", ["in", "class", "trunk", "primary", "secondary", "tertiary"], ["==", "$type", "LineString"]],
       "layout": {
         "text-size": 13,
         "text-max-angle": 30,
@@ -1038,11 +882,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", " ", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1063,12 +903,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation_name",
       "minzoom": 8,
-      "filter": [
-        "all",
-        ["<=", "ref_length", 6],
-        ["==", "$type", "LineString"],
-        ["!in", "network", "us-highway", "us-state", "us-interstate"]
-      ],
+      "filter": ["all", ["<=", "ref_length", 6], ["==", "$type", "LineString"], ["!in", "network", "us-highway", "us-state", "us-interstate"]],
       "layout": {
         "icon-image": "road_{ref_length}",
         "icon-rotation-alignment": "viewport",
@@ -1093,12 +928,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation_name",
       "minzoom": 9,
-      "filter": [
-        "all",
-        ["<=", "ref_length", 6],
-        ["==", "$type", "LineString"],
-        ["in", "network", "us-highway", "us-state"]
-      ],
+      "filter": ["all", ["<=", "ref_length", 6], ["==", "$type", "LineString"], ["in", "network", "us-highway", "us-state"]],
       "layout": {
         "text-size": 10,
         "icon-image": "{network}_{ref_length}",
@@ -1123,12 +953,7 @@
       "source": "openmaptiles",
       "source-layer": "transportation_name",
       "minzoom": 7,
-      "filter": [
-        "all",
-        ["<=", "ref_length", 3],
-        ["==", "$type", "LineString"],
-        ["==", "network", "us-interstate"]
-      ],
+      "filter": ["all", ["<=", "ref_length", 3], ["==", "$type", "LineString"], ["==", "network", "us-interstate"]],
       "layout": {
         "text-size": 10,
         "icon-image": "{network}_{ref_length}",
@@ -1168,11 +993,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1215,11 +1036,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1250,11 +1067,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1313,11 +1126,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1337,11 +1146,7 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "place",
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        ["all", ["!=", "capital", 2], ["==", "class", "city"], [">", "rank", 3]]
-      ],
+      "filter": ["all", ["==", "$type", "Point"], ["all", ["!=", "capital", 2], ["==", "class", "city"], [">", "rank", 3]]],
       "layout": {
         "text-size": {
           "stops": [
@@ -1376,11 +1181,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1400,16 +1201,7 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "place",
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        [
-          "all",
-          ["!=", "capital", 2],
-          ["<=", "rank", 3],
-          ["==", "class", "city"]
-        ]
-      ],
+      "filter": ["all", ["==", "$type", "Point"], ["all", ["!=", "capital", 2], ["<=", "rank", 3], ["==", "class", "city"]]],
       "layout": {
         "text-size": {
           "stops": [
@@ -1445,11 +1237,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1470,11 +1258,7 @@
       "source": "openmaptiles",
       "source-layer": "place",
       "minzoom": 4,
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        ["all", ["==", "capital", 2], ["==", "class", "city"], [">", "rank", 3]]
-      ],
+      "filter": ["all", ["==", "$type", "Point"], ["all", ["==", "capital", 2], ["==", "class", "city"], [">", "rank", 3]]],
       "layout": {
         "text-size": {
           "stops": [
@@ -1510,11 +1294,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1534,16 +1314,7 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "place",
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        [
-          "all",
-          ["==", "capital", 2],
-          ["==", "class", "city"],
-          ["<=", "rank", 3]
-        ]
-      ],
+      "filter": ["all", ["==", "$type", "Point"], ["all", ["==", "capital", 2], ["==", "class", "city"], ["<=", "rank", 3]]],
       "layout": {
         "text-size": {
           "stops": [
@@ -1578,11 +1349,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1612,11 +1379,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
@@ -1642,20 +1405,12 @@
       "source-layer": "place",
       "minzoom": 1,
       "maxzoom": 10,
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        ["all", ["==", "class", "country"], [">=", "rank", 2]]
-      ],
+      "filter": ["all", ["==", "$type", "Point"], ["all", ["==", "class", "country"], [">=", "rank", 2]]],
       "layout": {
         "visibility": "visible",
         "text-field": [
           "case",
-          [
-            "==",
-            ["coalesce", ["get", "name:es"], ["get", "name:latin"]],
-            "Falkland Islands"
-          ],
+          ["==", ["coalesce", ["get", "name:es"], ["get", "name:latin"]], "Falkland Islands"],
           "Islas Malvinas",
           [
             "concat",
@@ -1663,11 +1418,7 @@
 
             [
               "case",
-              [
-                "all",
-                ["has", "name:nonlatin"],
-                ["is-supported-script", ["get", "name:nonlatin"]]
-              ],
+              ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
               ["concat", "\n", ["get", "name:nonlatin"]],
               ""
             ]
@@ -1707,11 +1458,7 @@
       "source-layer": "place",
       "minzoom": 1,
       "maxzoom": 10,
-      "filter": [
-        "all",
-        ["==", "$type", "Point"],
-        ["all", ["<=", "rank", 1], ["==", "class", "country"]]
-      ],
+      "filter": ["all", ["==", "$type", "Point"], ["all", ["<=", "rank", 1], ["==", "class", "country"]]],
       "layout": {
         "visibility": "visible",
         "text-field": [
@@ -1720,11 +1467,7 @@
 
           [
             "case",
-            [
-              "all",
-              ["has", "name:nonlatin"],
-              ["is-supported-script", ["get", "name:nonlatin"]]
-            ],
+            ["all", ["has", "name:nonlatin"], ["is-supported-script", ["get", "name:nonlatin"]]],
             ["concat", "\n", ["get", "name:nonlatin"]],
             ""
           ]
