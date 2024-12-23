@@ -28,7 +28,11 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
   useEffect(() => {
     async function fetchSuggestions() {
       const config = new Configuration({
-        apiKey: 'Stadia-Auth 02a8b5af-47cd-43d3-8f83-869801b880cd'
+        apiKey: '02a8b5af-47cd-43d3-8f83-869801b880cd',
+        headers: {
+          Origin: 'https://basicasperucas.pages.dev',
+          Referer: 'https://basicasperucas.pages.dev/'
+        }
       });
       const api = new GeocodingApi(config);
       const res = await api.search({
