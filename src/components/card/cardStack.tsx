@@ -81,7 +81,13 @@ export default function CardStack() {
         type: 'x,y',
         edgeResistance: 0,
         inertia: false,
-        // ON DRAG
+
+        onDragStart: function () {
+          //prevent mapflyto while card on hold
+          const url = new URL(window.location.href);
+          url.searchParams.set('basica', 'hold');
+          window.history.pushState({}, '', url);
+        },
         onDrag: function () {
           gsap.to(topCard, {
             rotation: this.x / 30,
@@ -89,7 +95,6 @@ export default function CardStack() {
           });
           FlipDragState = Flip.getState(topCard);
         },
-        // ON DRAG END
         onDragEnd: function () {
           const x = FlipDragState.elementStates[0].x;
 

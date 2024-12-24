@@ -16,6 +16,7 @@ interface IsProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   searchQuery: string;
 }
+const API = import.meta.env.PUBLIC_STADIAMAPSAPIKEY;
 
 export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, map, center, zoom, speed, curve, searchQuery }: IsProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -26,9 +27,10 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
 
   // FETCH SUGGESTIONS
   useEffect(() => {
+    console.log(API);
     async function fetchSuggestions() {
       const config = new Configuration({
-        apiKey: '02a8b5af-47cd-43d3-8f83-869801b880cd',
+        apiKey: API,
         headers: {
           Origin: 'https://basicasperucas.pages.dev',
           Referer: 'https://basicasperucas.pages.dev/'

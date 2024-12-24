@@ -108,10 +108,11 @@ export default function Map() {
   }, []);
 
   // LISTEN SEARCHPARAMS CHANGES
-  const flyTo = useCallback((point: MapPoint) => {
+  const flyTo = useCallback((point: MapPoint | null) => {
+    if (point === null) return;
     if (map.current) {
       const offsetLatitud = 0.0045; // para centrar el punto en la pantalla
-      const lngLat = [point.lngLat[0], point.lngLat[1] - offsetLatitud] as [number, number];
+      const lngLat = [point?.lngLat[0], point?.lngLat[1] - offsetLatitud] as [number, number];
       map.current.flyTo({
         center: lngLat,
         zoom: 13,
@@ -120,7 +121,7 @@ export default function Map() {
       });
     }
   }, []);
-  const debouncedFlyTo = useRef(debouncer(flyTo, 300));
+  const debouncedFlyTo = useRef(debouncer(flyTo, 1000));
 
   useEffect(() => {
     const basica = searchParams?.get('basica');
