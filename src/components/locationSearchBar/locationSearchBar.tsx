@@ -1,8 +1,7 @@
 import * as Popover from '@radix-ui/react-popover';
 import { useState, useRef, useEffect } from 'react';
-import type { MapPoint } from '@/types';
+import type { MapPoint, Address, Markers } from '@/types';
 import maplibregl from 'maplibre-gl';
-import { GeocodingApi, Configuration } from '@stadiamaps/api';
 import styles from './style.module.css';
 import { useDebounce } from '@/utils/useDebounce';
 
@@ -13,60 +12,45 @@ interface IsProps {
   speed: number;
   curve: number;
   setSelectedPoint?: React.Dispatch<React.SetStateAction<MapPoint | null>>;
-  setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-  searchQuery: string;
 }
-const API = import.meta.env.PUBLIC_STADIAMAPSAPIKEY;
+const API = import.meta.env.PUBLIC_GEOAPIFY_API;
 
-export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, map, center, zoom, speed, curve, searchQuery }: IsProps) {
+export default function LocationSearchBar({ map, center, zoom, speed, curve }: IsProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms delay
+  const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 600); // 300ms delay
   const [searchState, setSearchState] = useState<'idle' | 'loading' | 'success' | 'empty'>('success');
+  const userMarkers = useRef<maplibregl.Marker[]>([]);
 
   // FETCH SUGGESTIONS
   useEffect(() => {
-    console.log(API);
     async function fetchSuggestions() {
-      const config = new Configuration({
-        apiKey: API,
-        headers: {
-          Origin: 'https://basicasperucas.pages.dev',
-          Referer: 'https://basicasperucas.pages.dev/'
-        }
-      });
-      const api = new GeocodingApi(config);
-      const res = await api.search({
+      const config = {
         text: debouncedSearchQuery,
-        lang: 'es-AR',
+        lang: 'es',
         size: 10,
-        layers: ['street', 'county', 'region', 'country'],
         focusPointLon: center[0],
         focusPointLat: center[1]
-        // boundaryCountry: ["AR"],
-      });
-      // console.log(res.features);
+      };
+      console.log(center);
+      const res = await fetch(
+        `https://api.geoapify.com/v1/geocode/autocomplete?text=${config.text}&apiKey=${API}&limit=${config.size}&lang=${config.lang}&bias=proximity:${config.focusPointLat},${config.focusPointLon}`
+      );
+      const data = await res.json();
+
       // FORMAT SUGGESTIONS
-      const number = debouncedSearchQuery.match(/\d+/);
-      const labels = res.features.map((item) => {
-        const addr = {
-          street: item?.properties?.street ? item.properties.street : '',
-          number: number ? ` ${number[0]}` : '',
-          county: item?.properties?.county ? `, ${item.properties.county}` : '',
-          region: item?.properties?.region ? `, ${item.properties.region}` : '',
-          country: item?.properties?.country ? `, ${item.properties.country}` : ''
-        };
-
-        // if (addr.street === undefined || addr.region === undefined) return
-
-        return `${addr.street}${addr.number}${addr.county}${addr.region}${addr.country}`;
+      const labels = data.features.map((item: Address) => {
+        // console.log(item.properties.formatted);
+        return item.properties.formatted;
       });
 
-      setSuggestions(labels);
+      const uniqueLabels = Array.from(new Set(labels)) as string[];
+      setSuggestions(uniqueLabels);
     }
     fetchSuggestions();
-  }, [debouncedSearchQuery, center]);
+  }, [debouncedSearchQuery]);
 
   // OPEN POPOVER
   useEffect(() => {
@@ -87,24 +71,28 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
   const handleSearch = async () => {
     setSearchState('loading');
     try {
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(searchQuery)}&apiKey=${API}`);
       const data = await response.json();
-
-      if (data && data.length > 0) {
+      console.log(data);
+      if (data && data.features.length > 0) {
         setSearchState('success');
-        const [lng, lat] = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+        // console.log(data.features[0].geometry.coordinates);
+
         map.current?.flyTo({
-          center: [lng, lat],
+          center: data.features[0].geometry.coordinates,
           zoom: zoom,
           speed: speed,
           curve: curve
         });
         //
-        new maplibregl.Marker({
+
+        const marker = new maplibregl.Marker({
           color: '#ffffff'
         })
-          .setLngLat([lng, lat])
+          .setLngLat(data.features[0].geometry.coordinates)
           .addTo(map.current!);
+
+        userMarkers.current.push(marker);
       } else {
         setSearchState('empty');
       }
@@ -115,22 +103,27 @@ export default function LocationSearchBar({ setSelectedPoint, setSearchQuery, ma
 
   // HANDLE RESET
   const handleResetView = () => {
+    userMarkers.current.forEach((marker: any) => {
+      console.log(marker);
+      marker.remove();
+    });
+    // markers.current = [];
     map.current?.flyTo({
       center: center,
-      zoom: zoom,
+      zoom: 4,
       speed: speed,
       curve: curve
     });
-    // setSelectedPoint(null);
   };
 
   // HANDLE SUGGESTION SELECTION
   const handleSuggestionClick = (suggestion: string) => {
     setSearchQuery(suggestion);
+
+    inputRef.current!.focus();
+
+    handleSearch();
     setOpen(false);
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
   };
 
   return (
