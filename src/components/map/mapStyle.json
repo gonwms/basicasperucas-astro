@@ -179,8 +179,8 @@
       "minzoom": 12,
       "filter": ["==", "$type", "Polygon"],
       "paint": {
-        "fill-color": "#434343",
-        "fill-outline-color": "hsla(0, 0%, 40%, 50%)",
+        "fill-color": "#373737",
+        "fill-outline-color": "#6666663d",
         "fill-antialias": true
       }
     },
@@ -1560,10 +1560,10 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
-      "minzoom": 17,
+      "minzoom": 16,
       "filter": ["all", ["==", "$type", "Point"]],
       "layout": {
-        "text-size": 11,
+        "text-size": 10,
         "icon-image": "poi-icon",
         "icon-size": 0.8,
         "icon-anchor": "center",

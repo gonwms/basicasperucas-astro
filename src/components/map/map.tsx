@@ -15,10 +15,11 @@ import { debouncer } from '@/utils/debouncer';
 const mapPoints = data as unknown as MapPoint[];
 const SPEED = 8;
 const CURVE = 0.3;
-const ZOOM_DEFAULT = 4;
+const ZOOM_DEFAULT = 16;
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 17;
-const DEFAULT_LNG_LAT: [number, number] = [-64.85, -41.05];
+// const DEFAULT_LNG_LAT: [number, number] = [-64.85, -41.05];
+const DEFAULT_LNG_LAT: [number, number] = [-58.41394236559472, -34.58264247963869];
 
 export default function Map() {
   //
@@ -141,8 +142,7 @@ export default function Map() {
   //  RENDER
   return (
     <>
-      <button onClick={() => console.log(markers.current)}>adada</button>
-
+      <button onClick={() => console.log(center)}>center</button>
       {<CardStack />}
       <div ref={mapContainer} style={{ width: '100%', height: '100dvh' }}></div>
       <LocationSearchBar map={map} center={center} zoom={14} speed={SPEED} curve={CURVE} />
