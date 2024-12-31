@@ -1560,10 +1560,10 @@
       "type": "symbol",
       "source": "openmaptiles",
       "source-layer": "poi",
-      "minzoom": 17,
+      "minzoom": 16,
       "filter": ["all", ["==", "$type", "Point"]],
       "layout": {
-        "text-size": 11,
+        "text-size": 10,
         "icon-image": "poi-icon",
         "icon-size": 0.8,
         "icon-anchor": "center",
