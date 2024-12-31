@@ -141,8 +141,6 @@ export default function Map() {
   //  RENDER
   return (
     <>
-      <button onClick={() => console.log(markers.current)}>adada</button>
-
       {<CardStack />}
       <div ref={mapContainer} style={{ width: '100%', height: '100dvh' }}></div>
       <LocationSearchBar map={map} center={center} zoom={14} speed={SPEED} curve={CURVE} />

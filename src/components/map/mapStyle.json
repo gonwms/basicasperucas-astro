@@ -179,7 +179,7 @@
       "minzoom": 12,
       "filter": ["==", "$type", "Polygon"],
       "paint": {
-        "fill-color": "#434343",
+        "fill-color": "#393939",
         "fill-outline-color": "hsla(0, 0%, 40%, 50%)",
         "fill-antialias": true
       }
