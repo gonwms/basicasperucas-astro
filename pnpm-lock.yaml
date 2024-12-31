@@ -14,6 +14,9 @@ importers:
       '@astrojs/react':
         specifier: ^3.6.2
         version: 3.6.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vite@5.4.11(@types/node@22.10.2))
+      '@fragaria/address-formatter':
+        specifier: ^6.3.0
+        version: 6.3.0
       '@gsap/react':
         specifier: ^2.1.1
         version: 2.1.1
@@ -560,6 +563,10 @@ packages:
 
   '@floating-ui/utils@0.2.8':
     resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
+
+  '@fragaria/address-formatter@6.3.0':
+    resolution: {integrity: sha512-lsiC1CX32XFYJCSRxHFWazeEYorM5Eyhqdl4L9RR5ZyuoqNLEEuMEzPo43jaL2p3ll1qblntpYI8VpsYZuRc/g==}
+    engines: {node: '>=20.0.0'}
 
   '@gsap/react@2.1.1':
     resolution: {integrity: sha512-apGPRrmpqxvl1T6Io1KgT8tFU+IuACI6z4zmT7t8+PASserJeLVRFJdSNUFA2Xb/eVkZI1noE8LIrY/w/oJECw==}
@@ -3190,6 +3197,10 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@floating-ui/utils@0.2.8': {}
+
+  '@fragaria/address-formatter@6.3.0':
+    dependencies:
+      mustache: 4.2.0
 
   '@gsap/react@2.1.1':
     dependencies:

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import type { MapPoint } from '@/types';
+import type { MapPoint, Markers } from '@/types';
 
 import data from '@/data/data.json';
 import mapStyle from './mapStyle.json';
@@ -13,17 +13,22 @@ import { debouncer } from '@/utils/debouncer';
 
 /* CONSTS */
 const mapPoints = data as unknown as MapPoint[];
-const SPEED = 3;
-const CURVE = 0.5;
+const SPEED = 8;
+const CURVE = 0.3;
 const ZOOM_DEFAULT = 4;
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 17;
 const DEFAULT_LNG_LAT: [number, number] = [-64.85, -41.05];
 
 export default function Map() {
   //
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
-  const center = useRef(DEFAULT_LNG_LAT);
-  const [searchQuery, setSearchQuery] = useState('');
+  const marker = useRef<maplibregl.Marker | null>(null);
+  const markers = useRef<Markers[]>([]);
+  // const center = useRef(DEFAULT_LNG_LAT);
+  const [center, setCenter] = useState(DEFAULT_LNG_LAT);
+  // const [searchQuery, setSearchQuery] = useState('');
   const { search, searchParams } = useUrlParameters();
 
   // MAP SETUP
@@ -34,14 +39,13 @@ export default function Map() {
       container: mapContainer.current,
       // style: "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json",
       style: mapStyle as maplibregl.MapOptions['style'], // https://maplibre.org/maputnik
-      center: center.current,
+      center: center,
       zoom: ZOOM_DEFAULT,
-      minZoom: 2,
-      maxZoom: 18,
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
       attributionControl: false
     });
-
-    if (!map.current) return;
+    map.current.scrollZoom.setWheelZoomRate(1 / 200);
 
     // ADD CONTROLS
     map.current.on('load', () => {
@@ -80,7 +84,7 @@ export default function Map() {
     });
     // ADD MARKERS
     map.current.on('load', () => {
-      mapPoints.forEach((point) => {
+      mapPoints.forEach((point, i) => {
         const marker = new maplibregl.Marker({
           // color: "#3fb1cecc", draggable: true,
         })
@@ -94,12 +98,15 @@ export default function Map() {
           url.searchParams.set('basica', point.id.toString());
           window.history.pushState({}, '', url);
         });
+        // // add ID and store
+        // marker.getElement().dataset.id = i.toString();
+        // markers.current.push({ id: i, type: 'point', marker: marker });
       });
     });
     // HANDLE MOVE
     map.current.on('moveend', (e: any) => {
       const mapcenter = map.current!.getCenter();
-      center.current = [mapcenter.lng, mapcenter.lat];
+      setCenter([mapcenter.lng, mapcenter.lat]);
       // console.log('center', center.current);
     });
     return () => {
@@ -134,17 +141,11 @@ export default function Map() {
   //  RENDER
   return (
     <>
+      <button onClick={() => console.log(markers.current)}>adada</button>
+
       {<CardStack />}
       <div ref={mapContainer} style={{ width: '100%', height: '100dvh' }}></div>
-      <LocationSearchBar
-        map={map}
-        center={center.current}
-        zoom={14}
-        speed={SPEED}
-        curve={CURVE}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
+      <LocationSearchBar map={map} center={center} zoom={14} speed={SPEED} curve={CURVE} />
     </>
   );
 }
