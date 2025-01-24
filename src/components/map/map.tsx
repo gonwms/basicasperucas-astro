@@ -46,7 +46,7 @@ export default function Map() {
       maxZoom: MAX_ZOOM,
       attributionControl: false
     });
-    map.current.scrollZoom.setWheelZoomRate(1 / 200);
+    map.current.scrollZoom.setWheelZoomRate(1 / 50);
 
     // ADD CONTROLS
     map.current.on('load', () => {
